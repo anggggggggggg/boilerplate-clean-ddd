@@ -1,0 +1,117 @@
+app:
+  name:
+  desc:
+  mode:
+  port:
+  env:
+  prefork:
+  auwi:
+  programFile:
+  workingDir:
+
+database:
+  host:
+  port:
+  user:
+  password:
+  name:
+  dialect:
+
+  resolver:
+    sources:
+      host:
+      port:
+      user:
+      password:
+      name:
+      dialect:
+
+    replicas:
+
+  log:
+    host:
+    port:
+    user:
+    password:
+    name:
+    dialect:
+    
+  warehouse:
+    host:
+    port:
+    user:
+    password:
+    name:
+    dialect:
+
+cache:
+  redis:
+    host:
+    port:
+    password:
+    database:
+    maxRetries:
+    poolSize:
+
+kafka:
+  servers:
+
+queue:
+  option:
+    concurrency:
+    shutdownTimeout:
+    healthCheckInterval:
+
+  redis:
+    host:
+    port:
+    password: 
+    database:
+    maxRetries:
+    poolSize:
+
+external:
+  host:
+    reportto:
+    log:
+    ws:
+    point:
+    wlb:
+    member:
+    bot:
+    paydia:
+    autobot:
+    direct:
+    callback:
+    report:
+    autowd:
+  token:
+    reportto:
+    log:
+    ws:
+    point:
+    wlb:
+    member:
+    bot:
+    paydia:
+    autobot:
+    direct:
+    callback:
+    report:
+    autowd:
+  seamlesshost:
+    wallet:
+    log:
+    notif:
+    member:
+    promo:
+    referal:
+    wss:
+  seamlesstoken:
+    wallet:
+    log:
+    notif:
+    member:
+    promo:
+    referal:
+    wss:

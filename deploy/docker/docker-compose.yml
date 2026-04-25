@@ -1,0 +1,90 @@
+name: boilerplate
+services:
+  app:
+    container_name: boilerplate_app
+    build:
+      context: ../../
+      dockerfile: deploy/docker/Dockerfile
+      target: development
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - boilerplate_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  postgres:
+    container_name: boilerplate_postgres
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=boilerplate
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - db_postgres_data:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    networks:
+      - boilerplate_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d boilerplate"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    container_name: boilerplate_redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass password
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - boilerplate_network
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a password ping | grep PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  asynqmon:
+    container_name: boilerplate_asynqmon
+    image: hibiken/asynqmon:latest
+    restart: unless-stopped
+    command:
+      - "--redis-addr=redis:6379"
+      - "--redis-password=password"
+    ports:
+      - "8080:8080"
+    networks:
+      - boilerplate_network
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  db_postgres_data:
+  redis_data:
+
+networks:
+  boilerplate_network:
+    driver: bridge
